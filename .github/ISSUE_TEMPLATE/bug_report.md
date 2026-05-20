@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 - [ ] I couldn't find this bug described in a dedicated issue.
-- [ ] The bug persists in the latest release of MiddleClick.
+- [ ] The bug persists in the latest release of TapBind.
 - [ ] I use a ProMotion-enabled (120Hz) display (built-in or external).
 - [ ] I use the app with a trackpad.
 - [ ] I use the app with a Magic Mouse.
@@ -28,7 +28,7 @@ A clear and concise description of what you expected to happen.
 
 **Environment info**
 - macOS version: 15.?.?
-- MiddleClick version: 3.?.?
+- TapBind version: 3.?.?
 
 **Screenshots**
 If applicable, add screenshots to help explain your problem.

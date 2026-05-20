@@ -1,47 +1,55 @@
 #!/bin/bash
 
-# MiddleClick - Build and Run Script
+# TapBind - Build and Run Script
 # Builds the project in Debug mode and runs it without opening Xcode
 
-set -e  # Exit on error
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+DEBUG_DERIVED_DATA="$REPO_ROOT/build/DerivedData"
+DEBUG_HOME="$REPO_ROOT/build/home"
+
+cd "$REPO_ROOT"
+mkdir -p "$DEBUG_DERIVED_DATA" "$DEBUG_HOME"
+
+XCODEBUILD_DEBUG_BASE=(
+  xcodebuild
+  -project MiddleClick.xcodeproj
+  -scheme MiddleClick
+  -configuration Debug
+  -derivedDataPath "$DEBUG_DERIVED_DATA"
+  CODE_SIGNING_ALLOWED=NO
+  CODE_SIGNING_REQUIRED=NO
+  CODE_SIGN_IDENTITY=
+)
 
 # Build only if BUILD_SKIP is not set (allows Makefile to skip redundant builds)
-if [ -z "$BUILD_SKIP" ]; then
-  echo "🔨 Building MiddleClick (Debug)..."
-  xcodebuild -project MiddleClick.xcodeproj \
-    -scheme MiddleClick \
-    -configuration Debug \
-    build \
-    | grep -E "BUILD (SUCCEEDED|FAILED)|error:" || true
-
-  # Check if build succeeded
-  if [ ${PIPESTATUS[0]} -ne 0 ]; then
-    echo "❌ Build failed!"
-    exit 1
-  fi
+if [ -z "${BUILD_SKIP:-}" ]; then
+  echo "🔨 Building TapBind (Debug)..."
+  env HOME="$DEBUG_HOME" "${XCODEBUILD_DEBUG_BASE[@]}" build 2>&1 | grep -E "BUILD (SUCCEEDED|FAILED)|error:"
   echo "✅ Build succeeded!"
 fi
 
-# Kill any existing MiddleClick instance
-echo "🔄 Stopping any running MiddleClick instances..."
-pkill -x MiddleClick 2>/dev/null || true
+# Kill any existing TapBind instance
+echo "🔄 Stopping any running TapBind instances..."
+pkill -x TapBind 2>/dev/null || true
 sleep 0.5
 
 # Run the newly built app
-echo "🚀 Starting MiddleClick..."
+echo "🚀 Starting TapBind..."
 
 # Ask Xcode where it put the .app (canonical — no find, no mtime guessing)
-BUILT_PRODUCTS_DIR=$(xcodebuild -project MiddleClick.xcodeproj -scheme MiddleClick -configuration Debug -showBuildSettings 2>/dev/null | awk -F ' = ' '/ BUILT_PRODUCTS_DIR =/ {print $2}')
-BUILD_PATH="$BUILT_PRODUCTS_DIR/MiddleClick.app"
+BUILT_PRODUCTS_DIR=$(env HOME="$DEBUG_HOME" "${XCODEBUILD_DEBUG_BASE[@]}" -showBuildSettings 2>/dev/null | awk -F ' = ' '/ BUILT_PRODUCTS_DIR =/ {print $2}')
+BUILD_PATH="$BUILT_PRODUCTS_DIR/TapBind.app"
 
 # If the .app is missing at the canonical path, something's off.
 if [ ! -d "$BUILD_PATH" ]; then
-  if [ -n "$BUILD_RETRIED" ]; then
+  if [ -n "${BUILD_RETRIED:-}" ]; then
     echo "❌ Error: .app still missing at $BUILD_PATH after rebuild"
     exit 1
   fi
 
-  if [ -n "$BUILD_SKIP" ]; then
+  if [ -n "${BUILD_SKIP:-}" ]; then
     # Called from `make run`: the Make stamp is stale (e.g. Xcode cleared
     # DerivedData since the last build). Invalidate it and let make's
     # dependency chain rebuild via clean-build + run.
@@ -57,4 +65,4 @@ if [ ! -d "$BUILD_PATH" ]; then
 fi
 
 open "$BUILD_PATH"
-echo "✨ MiddleClick is running!"
+echo "✨ TapBind is running!"

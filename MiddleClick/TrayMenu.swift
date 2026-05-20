@@ -44,7 +44,7 @@ import AppKit
 
   private func updateTapToClickStatus() {
     let tapToClick = config.tapToClick
-    let clickModeInfo = "Click" + (tapToClick ? " or Tap" : "")
+    let clickModeInfo = "Command+W on Click" + (tapToClick ? " or Tap" : "")
     let fingersInfo = " with \(config.minimumFingers)\(config.allowMoreFingers ? "+" : "") Fingers"
 
     infoItem.title = clickModeInfo + fingersInfo
@@ -68,10 +68,10 @@ import AppKit
     infoItem = menu.addItem(withTitle: "")
 
     tapToClickItem = menu.addItem(
-      withTitle: "Tap to click", action: #selector(toggleTapToClick), target: self)
+      withTitle: "Also trigger on tap", action: #selector(toggleTapToClick), target: self)
 
     let resetItem = menu.addItem(
-      withTitle: "Reset to System Settings", action: #selector(resetTapToClick), target: self)
+      withTitle: "Reset Tap Trigger to System Default", action: #selector(resetTapToClick), target: self)
     resetItem.isAlternate = true
     resetItem.keyEquivalentModifierMask = .option
 
@@ -153,7 +153,7 @@ extension TrayMenu {
     }
 
     for app in runningApps {
-      log.info("Terminating existing instance of MiddleClick (PID: \(app.processIdentifier))")
+      log.info("Terminating existing instance of TapBind (PID: \(app.processIdentifier))")
       if force { return app.forceTerminate() } else { return app.terminate() }
     }
 
@@ -165,7 +165,7 @@ extension TrayMenu {
 // MARK: Actions
 extension TrayMenu {
   @objc private func openWebsite() {
-    if let url = URL(string: "https://github.com/artginzburg/MiddleClick") {
+    if let url = URL(string: "https://github.com/gmch1/TapBind") {
       NSWorkspace.shared.open(url)
     }
   }

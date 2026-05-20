@@ -2,8 +2,8 @@
 
 > Most likely, you'll be migrating from v1/v2 to v3
 
-1. Quit an old version of MiddleClick
-2. Remove MiddleClick from the Accessibility settings
+1. Quit an old version of TapBind
+2. Remove TapBind from the Accessibility settings
    > `System Settings...` > `Privacy & Security` > `Accessibility`
 3. Enable the new version in Accessibility settings when prompted.
 
@@ -15,11 +15,11 @@
 
 Tweaking the Privacy settings while the app's running may freeze macOS input: remember to quit the app beforehand.
 
-If it happens — lock screen, wait a second, unlock, open Terminal via Spotlight Search, type `killall MiddleClick` and hit Return. If input freezes again before you succeed — lock screen and repeat the process.
+If it happens — lock screen, wait a second, unlock, open Terminal via Spotlight Search, type `killall TapBind` and hit Return. If input freezes again before you succeed — lock screen and repeat the process.
 
 ### Preferences
 
-Your MiddleClick preferences should migrate automatically. If they don't — configure manually as if installed for the first time.
+TapBind uses a new app identity, so existing preferences from older builds won't be carried over automatically. Configure it again as if installed for the first time.
 
 <br />
 

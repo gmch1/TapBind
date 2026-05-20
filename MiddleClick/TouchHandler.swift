@@ -1,3 +1,4 @@
+import Carbon.HIToolbox
 import MoreTouchCore
 import MultitouchSupport
 
@@ -21,11 +22,10 @@ import MultitouchSupport
   private static let maxDistanceDelta = config.maxDistanceDelta
   private static let maxTimeDelta = config.maxTimeDelta
 
-  private var maybeMiddleClick = false
+  private var maybeShortcutTrigger = false
   private var touchStartTime: Date?
-  private static var lastEmulatedMiddleClickTime: Date?
-  private var middleClickPos1: SIMD2<Float> = .zero
-  private var middleClickPos2: SIMD2<Float> = .zero
+  private var touchStartPos: SIMD2<Float> = .zero
+  private var touchEndPos: SIMD2<Float> = .zero
 
   private let touchCallback: MTFrameCallbackFunction = {
     _, data, nFingers, _, _ in
@@ -48,20 +48,20 @@ import MultitouchSupport
     let isTouchStart = nFingers > 0 && handler.touchStartTime == nil
     if isTouchStart {
       handler.touchStartTime = Date()
-      handler.maybeMiddleClick = true
-      handler.middleClickPos1 = .zero
-    } else if handler.maybeMiddleClick, let touchStartTime = handler.touchStartTime {
-      // Timeout check for middle click
+      handler.maybeShortcutTrigger = true
+      handler.touchStartPos = .zero
+    } else if handler.maybeShortcutTrigger, let touchStartTime = handler.touchStartTime {
+      // Timeout check for the tap-triggered shortcut
       let elapsedTime = -touchStartTime.timeIntervalSinceNow
       if elapsedTime > maxTimeDelta {
-        handler.maybeMiddleClick = false
+        handler.maybeShortcutTrigger = false
       }
     }
 
     guard !(nFingers < fingersQua) else { return }
 
     if !allowMoreFingers && nFingers > fingersQua {
-      handler.resetMiddleClick()
+      handler.resetShortcutTrigger()
     }
 
     let isCurrentFingersQuaAllowed = allowMoreFingers ? nFingers >= fingersQua : nFingers == fingersQua
@@ -75,31 +75,31 @@ import MultitouchSupport
   private func processTouches(data: UnsafePointer<MTTouch>?, nFingers: Int32) {
     guard let data = data else { return }
 
-    if maybeMiddleClick {
-      middleClickPos1 = .zero
+    if maybeShortcutTrigger {
+      touchStartPos = .zero
     } else {
-      middleClickPos2 = .zero
+      touchEndPos = .zero
     }
 
 //    TODO: Wait, what? Why is this iterating by fingersQua instead of nFingers, given that e.g. "allowMoreFingers" exists?
     for touch in UnsafeBufferPointer(start: data, count: Self.fingersQua) {
       let pos = SIMD2(touch.normalizedVector.position)
-      if maybeMiddleClick {
-        middleClickPos1 += pos
+      if maybeShortcutTrigger {
+        touchStartPos += pos
       } else {
-        middleClickPos2 += pos
+        touchEndPos += pos
       }
     }
 
-    if maybeMiddleClick {
-      middleClickPos2 = middleClickPos1
-      maybeMiddleClick = false
+    if maybeShortcutTrigger {
+      touchEndPos = touchStartPos
+      maybeShortcutTrigger = false
     }
   }
 
-  private func resetMiddleClick() {
-    maybeMiddleClick = false
-    middleClickPos1 = .zero
+  private func resetShortcutTrigger() {
+    maybeShortcutTrigger = false
+    touchStartPos = .zero
   }
 
   private func handleTouchEnd() {
@@ -108,43 +108,12 @@ import MultitouchSupport
     let elapsedTime = -startTime.timeIntervalSinceNow
     touchStartTime = nil
 
-    guard middleClickPos1.isNonZero && elapsedTime <= Self.maxTimeDelta else { return }
+    guard touchStartPos.isNonZero && elapsedTime <= Self.maxTimeDelta else { return }
 
-    let delta = middleClickPos1.delta(to: middleClickPos2)
-    if delta < Self.maxDistanceDelta && !shouldPreventEmulation() {
-      Self.emulateMiddleClick()
+    let delta = touchStartPos.delta(to: touchEndPos)
+    if delta < Self.maxDistanceDelta {
+      GestureShortcut.performCommandW()
     }
-  }
-
-  private static func emulateMiddleClick() {
-    if let lastTime = lastEmulatedMiddleClickTime,
-       -lastTime.timeIntervalSinceNow < maxTimeDelta * 0.3 {
-      return
-    }
-    lastEmulatedMiddleClickTime = .init()
-
-    // get the current pointer location
-    let location = CGEvent(source: nil)?.location ?? .zero
-    let buttonType: CGMouseButton = .center
-
-    postMouseEvent(type: .otherMouseDown, button: buttonType, location: location)
-    postMouseEvent(type: .otherMouseUp, button: buttonType, location: location)
-  }
-
-  private func shouldPreventEmulation() -> Bool {
-    guard let naturalLastTime = GlobalState.shared.naturalMiddleClickLastTime else { return false }
-
-    let elapsedTimeSinceNatural = -naturalLastTime.timeIntervalSinceNow
-    return elapsedTimeSinceNatural <= Self.maxTimeDelta * 0.75 // fine-tuned multiplier
-  }
-
-  private static func postMouseEvent(
-    type: CGEventType, button: CGMouseButton, location: CGPoint
-  ) {
-    CGEvent(
-      mouseEventSource: nil, mouseType: type, mouseCursorPosition: location,
-      mouseButton: button
-    )?.post(tap: .cghidEventTap)
   }
 
   private var currentDeviceList: [MTDevice] = []
@@ -167,4 +136,33 @@ extension SIMD2 where Scalar: FloatingPoint {
   }
 
   var isNonZero: Bool { x != 0 || y != 0 }
+}
+
+enum GestureShortcut {
+  private static let commandKeyCode = CGKeyCode(kVK_Command)
+  private static let wKeyCode = CGKeyCode(kVK_ANSI_W)
+
+  @MainActor
+  static func performCommandW() {
+    if let lastTime = GlobalState.shared.lastShortcutTriggerTime,
+       -lastTime.timeIntervalSinceNow < Config.shared.maxTimeDelta * 0.75 {
+      return
+    }
+    GlobalState.shared.lastShortcutTriggerTime = .init()
+
+    let events: [(CGKeyCode, Bool, CGEventFlags)] = [
+      (commandKeyCode, true, .maskCommand),
+      (wKeyCode, true, .maskCommand),
+      (wKeyCode, false, .maskCommand),
+      (commandKeyCode, false, [])
+    ]
+
+    for (keyCode, keyDown, flags) in events {
+      guard let event = CGEvent(keyboardEventSource: nil, virtualKey: keyCode, keyDown: keyDown) else {
+        continue
+      }
+      event.flags = flags
+      event.post(tap: .cghidEventTap)
+    }
+  }
 }

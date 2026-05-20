@@ -32,17 +32,17 @@ Three Finger Drag
 
 ## Incompatibility
 
-TFD conflicts with MiddleClick, when using it with 3 fingers (default setting).
+TFD conflicts with TapBind, when using it with 3 fingers (default setting).
 
-1. An intended middleclick is going to cause both an unintended left click and the middle click.
+1. An intended TapBind gesture is going to cause both an unintended left click and the middle click.
 2. Three Finger Drag itself is not going to work at all.
-   - With MiddleClick v2.x, it will work, but is going to cause the left+middle click problem described in point 1, making MiddleClick unusable.
+   - With MiddleClick v2.x, it will work, but is going to cause the left+middle click problem described in point 1, making TapBind unusable.
 
 ## Known workarounds
 
-- Change MiddleClick `fingers` setting to 4.
-- Choose to `Ignore Finder` in the status menu of MiddleClick.
-  > This obviously only works for Finder, but you can do that for other apps for which you know you need TFD more than MiddleClick.
+- Change TapBind's `fingers` setting to 4.
+- Choose to `Ignore Finder` in the status menu of TapBind.
+  > This obviously only works for Finder, but you can do that for other apps for which you know you need TFD more than TapBind.
 - Opt in for [another "Dragging style"](#other-dragging-styles).
 
 ## Other "Dragging styles"
@@ -55,7 +55,7 @@ These options also make your primary tap take longer to register, as a side-effe
 
 ## Related problems
 
-- MiddleClick conflicts with the "Tap with Three Fingers" setting of "Look up & data detectors"
+- TapBind conflicts with the "Tap with Three Fingers" setting of "Look up & data detectors"
   - Workaround from [#52](https://github.com/artginzburg/MiddleClick/issues/52): setting "Look up & data detectors" _to_ "Tap with Three Fingers" actually _blocks_ the unintended left click, at the cost of a brief "Look up" popup appearing sometimes.
 
 ---

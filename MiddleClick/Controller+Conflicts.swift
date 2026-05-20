@@ -22,19 +22,19 @@ extension Controller {
       let alert = AppUtils.warningAlert(
         title: "Conflicting gesture\(both ? "s" : "")",
         message: """
-Some optional gestures on your Mac won't work properly with MiddleClick.
-Turn them off in System Settings, change MiddleClick's "fingers" setting to 4, or apply the workarounds below:
+Some optional gestures on your Mac won't work properly with TapBind.
+Turn them off in System Settings, change TapBind's "fingers" setting to 4, or apply the workarounds below:
 \(threeFingerDragConflict ? """
 
 Dragging style: "Three Finger Drag"
-Issue — won't function, also adds an unintended left click to any middle click.
-Workarounds — Opt in for another Dragging style, or Choose to 'Ignore Finder' in the status menu of MiddleClick.
+Issue — won't function, and may add an unintended left click to the app shortcut gesture.
+Workarounds — Opt in for another Dragging style, or choose to 'Ignore Finder' in the status menu of TapBind.
 """ : "")
 \(threeFingerTapConflict ? """
 
 Look up & data detectors: "Tap with Three Fingers"
-Issue — will fire simultaneously with MiddleClick.
-Workarounds — Disable 'Tap to click' in the status menu of MiddleClick.
+Issue — will fire simultaneously with the app shortcut gesture.
+Workarounds — Disable 'Also trigger on tap' in the status menu of TapBind.
 """ : "")
 """
       )
@@ -42,7 +42,7 @@ Workarounds — Disable 'Tap to click' in the status menu of MiddleClick.
       button.action = #selector(self.openConflictingGesturesDocs)
       button.target = self
 
-      let updateFingersSettingButton = alert.addButton(withTitle: "Use four fingers to middleclick")
+      let updateFingersSettingButton = alert.addButton(withTitle: "Use four fingers instead")
       updateFingersSettingButton.action = #selector(self.changeTo4FingersGesture)
       updateFingersSettingButton.target = self
 
@@ -63,7 +63,7 @@ Workarounds — Disable 'Tap to click' in the status menu of MiddleClick.
   }
 
   @objc private func openConflictingGesturesDocs() {
-    if let url = URL(string: "https://github.com/artginzburg/MiddleClick/blob/c9dfda78b8a481a173381ca35a0bd1108afc1bbd/docs/three-finger-drag.md#three-finger-drag") {
+    if let url = URL(string: "https://github.com/gmch1/TapBind/blob/main/docs/three-finger-drag.md#three-finger-drag") {
       NSWorkspace.shared.open(url)
     }
   }

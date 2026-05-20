@@ -1,4 +1,4 @@
-name: Build, Sign and Upload MiddleClick
+name: Build, Sign and Upload TapBind
 
 on:
   workflow_dispatch:
@@ -38,14 +38,14 @@ jobs:
         run: sudo xcode-select -s "$(ls -d /Applications/Xcode*.app | sort -V | tail -n 1)/Contents/Developer"
         # use /Applications/Xcode_16.2.app instead if problems occur
 
-      - name: Build MiddleClick (Using Makefile)
+      - name: Build TapBind (Using Makefile)
         run: make all
 
       - name: Notarize with App Store Connect API
         run: |
           echo "$AC_API_PRIVATE_KEY" | base64 --decode -o private_key.p8
 
-          xcrun notarytool submit build/MiddleClick.zip \
+          xcrun notarytool submit build/TapBind.zip \
             --key private_key.p8 \
             --key-id "$AC_API_KEY_ID" \
             --issuer "$AC_API_ISSUER_ID" \
@@ -57,16 +57,16 @@ jobs:
 
       - name: Staple notarization ticket to app
         run: |
-          unzip -o build/MiddleClick.zip -d build/
-          xcrun stapler staple build/MiddleClick.app
+          unzip -o build/TapBind.zip -d build/
+          xcrun stapler staple build/TapBind.app
 
       - name: Verify code signing
         run: |
-          codesign --verify --deep --strict --verbose=2 build/MiddleClick.app
-          spctl --assess --type exec --verbose build/MiddleClick.app
-          xcrun stapler validate build/MiddleClick.app
+          codesign --verify --deep --strict --verbose=2 build/TapBind.app
+          spctl --assess --type exec --verbose build/TapBind.app
+          xcrun stapler validate build/TapBind.app
 
-      - name: Compress MiddleClick again (Using Makefile)
+      - name: Compress TapBind again (Using Makefile)
         run: make compress
 
       - name: Configure GH CLI
@@ -85,7 +85,7 @@ jobs:
 
       - name: Remove old asset (if exists)
         run: |
-          ASSET_NAME="MiddleClick.zip"
+          ASSET_NAME="TapBind.zip"
           RELEASE_ID=$(gh release view "$RELEASE_TAG" --json databaseId -q '.databaseId')
           ASSET_ID=$(gh api repos/${GITHUB_REPOSITORY}/releases/$RELEASE_ID/assets --jq '.[] | select(.name=="'"$ASSET_NAME"'") | .id')
 
@@ -97,6 +97,6 @@ jobs:
 
       - name: Upload new asset
         run: |
-          gh release upload "$RELEASE_TAG" ./build/MiddleClick.zip --clobber
+          gh release upload "$RELEASE_TAG" ./build/TapBind.zip --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

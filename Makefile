@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 all: archive export compress
 
 ## Development targets
@@ -8,11 +10,15 @@ SOURCES := $(shell find MiddleClick MoreTouch ConfigCore -type f \( -name "*.swi
 
 # Stamp file to track last build
 BUILD_STAMP := ./build/.build-stamp
+DEBUG_DERIVED_DATA := $(CURDIR)/build/DerivedData
+DEBUG_HOME := $(CURDIR)/build/home
+DEBUG_XCODEBUILD := HOME="$(DEBUG_HOME)" xcodebuild -project MiddleClick.xcodeproj -scheme MiddleClick -configuration Debug -derivedDataPath "$(DEBUG_DERIVED_DATA)" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=
 
 # Only build if sources changed since last build
 $(BUILD_STAMP): $(SOURCES)
-	@echo "🔨 Building MiddleClick (Debug)..."
-	@xcodebuild -project MiddleClick.xcodeproj -scheme MiddleClick -configuration Debug build | grep -E "BUILD (SUCCEEDED|FAILED)|error:" || true
+	@echo "🔨 Building TapBind (Debug)..."
+	@mkdir -p "$(DEBUG_DERIVED_DATA)" "$(DEBUG_HOME)"
+	@set -o pipefail; $(DEBUG_XCODEBUILD) build 2>&1 | grep -E "BUILD (SUCCEEDED|FAILED)|error:"
 	@echo "✅ Build succeeded!"
 	@mkdir -p $(dir $(BUILD_STAMP))
 	@touch $(BUILD_STAMP)
@@ -20,7 +26,7 @@ $(BUILD_STAMP): $(SOURCES)
 build-debug: $(BUILD_STAMP)
 
 run: $(BUILD_STAMP)
-	@echo "🚀 Running MiddleClick..."
+	@echo "🚀 Running TapBind..."
 	@BUILD_SKIP=1 ./scripts/build-and-run.sh
 
 force-build:
@@ -37,14 +43,14 @@ archive:
 
 export:
 	xcodebuild -exportArchive \
-		-archivePath "$(shell ls -td ~/Library/Developer/Xcode/Archives/*/MiddleClick*.xcarchive | head -1)" \
+		-archivePath "$(shell ls -td ~/Library/Developer/Xcode/Archives/*/TapBind*.xcarchive | head -1)" \
 		-exportPath "$(shell pwd)/build" \
 		-exportOptionsPlist ./build-config/ExportOptions.plist
 
 compress:
 	cd ./build && \
-	rm -f ./MiddleClick.zip && \
-	zip -r9 ./MiddleClick.zip ./MiddleClick.app
+	rm -f ./TapBind.zip && \
+	zip -r9 ./TapBind.zip ./TapBind.app
 
 create-cert:
 	security export -k ~/Library/Keychains/login.keychain-db -t identities -f pkcs12 | base64 | pbcopy

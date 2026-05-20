@@ -1,13 +1,13 @@
-<a href="https://github.com/artginzburg/MiddleClick/releases">
-  <img align="right" src="https://img.shields.io/github/downloads/artginzburg/MiddleClick/total?color=teal" title="GitHub All Releases">
+<a href="https://github.com/gmch1/TapBind/releases">
+  <img align="right" src="https://img.shields.io/github/downloads/gmch1/TapBind/total?color=teal" title="GitHub All Releases">
 </a>
 
 <div align="center">
   <h1>
-    MiddleClick <img align="center" height="80" src="MiddleClick/Images.xcassets/AppIcon.appiconset/icon_128p.png">
+    TapBind <img align="center" height="80" src="MiddleClick/Images.xcassets/AppIcon.appiconset/icon_128p.png">
   </h1>
   <p>
-    <b>Emulate a scroll wheel click with three finger Click or Tap on MacBook trackpad and Magic Mouse</b>
+    <b>Trigger <code>Command+W</code> with a three finger Click or Tap on MacBook trackpad and Magic Mouse</b>
   </p>
   <p>
     with <b>macOS</b> Sequoia<a href="https://www.apple.com/macos/macos-sequoia/"><sup>15</sup></a> support!
@@ -21,25 +21,25 @@
 
 <blockquote align="right">
 
-It's more than just `⌘`+click
+Three fingers can close more than tabs
 
 </blockquote>
 
 <p align="right">
 
-`System-wide` · close tabs by middleclicking on them
+`System-wide` · close the current tab or window with a three-finger gesture
 
 </p>
 
 <p align="right">
 
-`In Safari` · middleclicking on a link opens it in the background as a new tab
+`In Safari` · quickly close the active tab with `Command+W`
 
 </p>
 
 <p align="right">
 
-`In Terminal` · paste selected text
+`In Finder` · close the frontmost window without reaching for the keyboard
 
 </p>
 
@@ -55,7 +55,7 @@ brew install --cask middleclick
 
 > Check out [the cask](https://github.com/Homebrew/homebrew-cask/blob/master/Casks/m/middleclick.rb) if you're interested
 
-### <a href="https://github.com/artginzburg/MiddleClick/releases/latest/download/MiddleClick.zip">Direct Download · <img align="center" alt="GitHub release" src="https://img.shields.io/github/release/artginzburg/MiddleClick?label=%20&color=gray"></a>
+### <a href="https://github.com/gmch1/TapBind/releases/latest/download/TapBind.zip">Direct Download · <img align="center" alt="GitHub release" src="https://img.shields.io/github/release/gmch1/TapBind?label=%20&color=gray"></a>
 
 If you've used v1 or v2 — glance over [How to migrate](./docs/MIGRATIONS.md).
 
@@ -70,31 +70,31 @@ If you've used v1 or v2 — glance over [How to migrate](./docs/MIGRATIONS.md).
 1. Hold `⌘` and drag the icon away from the menu bar until you see :heavy_multiplication_x:
 2. Release
 
-To bring it back — just open MiddleClick again while it's already running.
+To bring it back — just open TapBind again while it's already running.
 
 ### Number of Fingers
 
-- Want to use 4, 5 or 2 fingers for middleclicking? No trouble. Even 10 is possible.
+- Want to use 4, 5 or 2 fingers for triggering `Command+W`? No trouble. Even 10 is possible.
 - **Note:** setting `fingers` to `2` will conflict with normal two-finger right-clicks and single-finger clicks.
 
 ```ps1
-defaults write art.ginzburg.MiddleClick fingers 4
+defaults write art.ginzburg.TapBind fingers 4
 ```
 
 > Default is 3
 
-### Allow to click with more than the defined number of fingers.
+### Allow more than the defined number of fingers
 
 - This is useful if your second hand accidentally touches the touchpad.
 - Unfortunately, this does not serve as a palm rejection technique for huge touchpads.
 
 ```ps1
-defaults write art.ginzburg.MiddleClick allowMoreFingers true
+defaults write art.ginzburg.TapBind allowMoreFingers true
 ```
 
 > Default is false, so that the number of fingers is precise
 
-### Tapping preferences
+### Tap trigger preferences
 
 #### Max Distance Delta
 
@@ -102,7 +102,7 @@ defaults write art.ginzburg.MiddleClick allowMoreFingers true
 - The position is normalized and values go from 0 to 1.
 
 ```ps1
-defaults write art.ginzburg.MiddleClick maxDistanceDelta 0.03
+defaults write art.ginzburg.TapBind maxDistanceDelta 0.03
 ```
 
 > Default is 0.05
@@ -112,7 +112,7 @@ defaults write art.ginzburg.MiddleClick maxDistanceDelta 0.03
 - The maximum interval in milliseconds between touch and release for a tap to be considered valid.
 
 ```ps1
-defaults write art.ginzburg.MiddleClick maxTimeDelta 150
+defaults write art.ginzburg.TapBind maxTimeDelta 150
 ```
 
 > Default is 300
@@ -120,7 +120,7 @@ defaults write art.ginzburg.MiddleClick maxTimeDelta 150
 ## Troubleshooting
 
 - [Accessibility permissions not working after an update](./docs/troubleshooting.md#accessibility-permissions-not-working-after-an-update)
-- [Antivirus / CleanMyMac false positive](./docs/troubleshooting.md#antivirus--cleanmymac-flags-middleclick-as-adware)
+- [Antivirus / CleanMyMac false positive](./docs/troubleshooting.md#antivirus--cleanmymac-flags-tapbind-as-adware)
 - [Three Finger Drag conflicts](./docs/three-finger-drag.md)
 
 ## Building from source
@@ -129,7 +129,7 @@ defaults write art.ginzburg.MiddleClick maxTimeDelta 150
 
 1. Clone the repo
 2. Run `make`
-3. You'll get a `MiddleClick.app` in `./build/`
+3. You'll get a `TapBind.app` in `./build/`
 
 ## Credits
 

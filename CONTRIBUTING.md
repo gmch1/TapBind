@@ -1,4 +1,4 @@
-# Contributing to MiddleClick
+# Contributing to TapBind
 
 Thanks for your interest in contributing! This project is maintained in spare time, so community help is genuinely appreciated.
 
@@ -23,10 +23,10 @@ This builds in Debug mode and launches the app, killing any running instance fir
 
 ### Logs
 
-MiddleClick uses `os_log`. To see logs in real time:
+TapBind uses `os_log`. To see logs in real time:
 
 ```sh
-log stream --predicate 'subsystem == "art.ginzburg.MiddleClick"' --style compact --level debug
+log stream --predicate 'subsystem == "art.ginzburg.TapBind"' --style compact --level debug
 ```
 
 See [docs/dev.md](./docs/dev.md) for filtering by category.
@@ -38,7 +38,7 @@ MiddleClick/
   main.swift              — Entry point
   Controller.swift        — Lifecycle: start, restart on wake/device changes, session handling
   Controller+Mouse.swift  — Mouse event (click) callback
-  TouchHandler.swift      — Multitouch callback: finger counting, tap detection, middle-click emulation
+  TouchHandler.swift      — Multitouch callback: finger counting, tap detection, shortcut triggering
   Config.swift            — User defaults (fingers, maxTimeDelta, etc.)
   TrayMenu.swift          — Status bar menu UI
   FingerCountControl.swift — The finger count stepper in the menu
@@ -58,7 +58,7 @@ ConfigCore/               — Swift package for the @UserDefault property wrappe
 
 1. `TouchHandler` registers a callback on every connected multitouch device (`MTDevice`).
 2. When fingers touch the surface, the callback tracks finger count, positions, and timing.
-3. If the touch matches the configured gesture (N fingers, within time/distance thresholds), it emits a `CGEvent` middle-click.
+3. If the touch matches the configured gesture (N fingers, within time/distance thresholds), it emits the configured shortcut event.
 4. `Controller+Mouse` handles the click-based path (as opposed to tap-based) using a `CGEvent` tap.
 
 ## Pull request guidelines
@@ -77,13 +77,13 @@ Since this project lacks regular Magic Mouse testers (and sometimes trackpad tes
 make build-debug
 
 # 2. Ask Xcode where it put the .app
-APP="$(xcodebuild -project MiddleClick.xcodeproj -scheme MiddleClick -configuration Debug -showBuildSettings 2>/dev/null | awk -F ' = ' '/ BUILT_PRODUCTS_DIR =/ {print $2}')/MiddleClick.app"
+APP="$(xcodebuild -project MiddleClick.xcodeproj -scheme MiddleClick -configuration Debug -showBuildSettings 2>/dev/null | awk -F ' = ' '/ BUILT_PRODUCTS_DIR =/ {print $2}')/TapBind.app"
 
 # 3. Zip it into the repo's build/ dir
-mkdir -p build && ditto -c -k --keepParent "$APP" build/MiddleClick-test.zip
+mkdir -p build && ditto -c -k --keepParent "$APP" build/TapBind-test.zip
 ```
 
-Then drag `build/MiddleClick-test.zip` into the PR comment field on GitHub and link testers to [#running-a-test-build](#running-a-test-build).
+Then drag `build/TapBind-test.zip` into the PR comment field on GitHub and link testers to [#running-a-test-build](#running-a-test-build).
 
 ## Running a test build
 
@@ -93,11 +93,11 @@ Debug builds aren't signed with a distribution certificate, so macOS Gatekeeper 
 
 ```sh
 # Remove the quarantine attribute, then run
-xattr -cr MiddleClick.app
-open MiddleClick.app
+xattr -cr TapBind.app
+open TapBind.app
 ```
 
-Grant Accessibility permission to this specific build in System Settings → Privacy & Security → Accessibility. If you already have a production MiddleClick installed, quit it first.
+Grant Accessibility permission to this specific build in System Settings → Privacy & Security → Accessibility. If you already have a production TapBind installed, quit it first.
 
 ## Don't have a Magic Mouse?
 

@@ -25,7 +25,6 @@ enum UserDefaultsMigration {
 
   private static func migrateFromOldBundleID() {
     let oldBundleID = "com.rouge41.middleClick"
-
     guard let oldDefaults = UserDefaults(suiteName: oldBundleID) else {
       log.info("No old UserDefaults found.")
       return
@@ -70,4 +69,5 @@ enum UserDefaultsMigration {
     log.info("Migrating \(key) = \(!newValue) -> \(newKey) = \(newValue).")
     UserDefaults.standard.set(newValue, forKey: newKey)
   }
+
 }

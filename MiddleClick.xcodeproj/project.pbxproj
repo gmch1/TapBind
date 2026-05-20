@@ -13,7 +13,7 @@
 
 /* Begin PBXFileReference section */
 		75A6B66B0FEE87AB0071FAC0 /* MultitouchSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultitouchSupport.framework; path = /System/Library/PrivateFrameworks/MultitouchSupport.framework; sourceTree = "<absolute>"; };
-		976CE1432D73BA00002D9FBB /* MiddleClick.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MiddleClick.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		976CE1432D73BA00002D9FBB /* TapBind.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TapBind.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		976CE2042D73D0EC002D9FBB /* ConfigCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ConfigCore; sourceTree = "<group>"; };
 		97C3CD9E2D8231C000F24C4C /* MoreTouch */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = MoreTouch; sourceTree = "<group>"; };
 		97C91DE82D7B069700EEBDF1 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -60,7 +60,7 @@
 		976CE1442D73BA00002D9FBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				976CE1432D73BA00002D9FBB /* MiddleClick.app */,
+				976CE1432D73BA00002D9FBB /* TapBind.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -85,9 +85,13 @@
 				976CE16D2D73BAFC002D9FBB /* MiddleClick */,
 			);
 			name = MiddleClick;
+			packageProductDependencies = (
+				9701F9A02D8235BA00FED88A /* MoreTouchCore */,
+				976CE2022D73C762002D9FBB /* ConfigCore */,
+			);
 			productInstallPath = "$(HOME)/Applications";
 			productName = test;
-			productReference = 976CE1432D73BA00002D9FBB /* MiddleClick.app */;
+			productReference = 976CE1432D73BA00002D9FBB /* TapBind.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -113,6 +117,10 @@
 				Base,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* test */;
+			packageReferences = (
+				976CE2052D73D0EC002D9FBB /* XCLocalSwiftPackageReference "ConfigCore" */,
+				97C3CD9F2D8231C000F24C4C /* XCLocalSwiftPackageReference "MoreTouch" */,
+			);
 			productRefGroup = 976CE1442D73BA00002D9FBB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -193,7 +201,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = MiddleClick;
+				INFOPLIST_KEY_CFBundleDisplayName = TapBind;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2019-2025 Arthur Ginzburg";
@@ -202,8 +210,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 3.2.0;
 				OTHER_SWIFT_STDLIB_TOOL_FLAGS = "--source-libraries /dev/null";
-				PRODUCT_BUNDLE_IDENTIFIER = art.ginzburg.MiddleClick;
-				PRODUCT_NAME = MiddleClick;
+				PRODUCT_BUNDLE_IDENTIFIER = art.ginzburg.TapBind;
+				PRODUCT_NAME = TapBind;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SDKROOT = macosx;
@@ -239,7 +247,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = MiddleClick;
+				INFOPLIST_KEY_CFBundleDisplayName = TapBind;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2019-2025 Arthur Ginzburg";
@@ -248,8 +256,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 3.2.0;
 				OTHER_SWIFT_STDLIB_TOOL_FLAGS = "--source-libraries /dev/null";
-				PRODUCT_BUNDLE_IDENTIFIER = art.ginzburg.MiddleClick;
-				PRODUCT_NAME = MiddleClick;
+				PRODUCT_BUNDLE_IDENTIFIER = art.ginzburg.TapBind;
+				PRODUCT_NAME = TapBind;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SDKROOT = macosx;
@@ -356,13 +364,26 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		976CE2052D73D0EC002D9FBB /* XCLocalSwiftPackageReference "ConfigCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ConfigCore;
+		};
+		97C3CD9F2D8231C000F24C4C /* XCLocalSwiftPackageReference "MoreTouch" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = MoreTouch;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		9701F9A02D8235BA00FED88A /* MoreTouchCore */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 97C3CD9F2D8231C000F24C4C /* XCLocalSwiftPackageReference "MoreTouch" */;
 			productName = MoreTouchCore;
 		};
 		976CE2022D73C762002D9FBB /* ConfigCore */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 976CE2052D73D0EC002D9FBB /* XCLocalSwiftPackageReference "ConfigCore" */;
 			productName = ConfigCore;
 		};
 /* End XCSwiftPackageProductDependency section */
